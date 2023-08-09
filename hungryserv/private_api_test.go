@@ -101,7 +101,7 @@ func TestPrivateAPI(t *testing.T) {
 		{Path: "/_matrix/client/v3/directory/room/{roomAlias}", Method: http.MethodGet},
 		{Path: "/_matrix/client/v3/directory/room/{roomAlias}", Method: http.MethodPut},
 		{Path: "/_matrix/client/v3/directory/room/{roomAlias}", Method: http.MethodDelete},
-		{Path: "/_matrix/client/v3/rooms/{roomID}/aliases", Method: http.MethodDelete},
+		{Path: "/_matrix/client/v3/rooms/{roomID}/aliases", Method: http.MethodGet},
 
 		{Path: "/_matrix/client/v3/logout", Method: http.MethodPost},
 		{Path: "/_matrix/client/v3/logout/all", Method: http.MethodPost},
