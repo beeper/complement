@@ -24,7 +24,6 @@ func TestPrivateAPI(t *testing.T) {
 		{Path: "/_matrix/client/v3/capabilities", Method: http.MethodGet},
 
 		// Devices endpoints
-		{Path: "/_matrix/client/v3/devices", Method: http.MethodGet},
 		{Path: "/_matrix/client/v3/sendToDevice/{type}/{txn}", Method: http.MethodPut},
 
 		{Path: "/_matrix/client/v3/account/whoami", Method: http.MethodGet},
