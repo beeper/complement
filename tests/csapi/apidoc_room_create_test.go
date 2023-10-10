@@ -179,7 +179,7 @@ func TestRoomCreate(t *testing.T) {
 			alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
 
 			// Get ordered timeline via a full sync
-			res, _ := alice.MustSync(t, client.SyncReq{})
+			res, _ := alice.MustSync(t, client.SyncReq{Filter: `{"room":{"timeline":{"limit":20}}}`})
 
 			roomObj := res.Get("rooms.join." + client.GjsonEscape(roomID))
 
