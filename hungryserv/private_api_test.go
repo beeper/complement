@@ -118,13 +118,6 @@ func TestPrivateAPI(t *testing.T) {
 		{Path: "/_matrix/media/unstable/fi.mau.msc2246/upload/{serverName}/{mediaID}", Method: http.MethodPut},
 		{Path: "/_matrix/media/unstable/fi.mau.msc2246/upload/{serverName}/{mediaID}/complete", Method: http.MethodPost},
 
-		// Roomserv Synapse change notify endpoints
-		{Path: "/_matrix/hungryserv/unstable/refresh_devices", Method: http.MethodPost},
-		{Path: "/_matrix/hungryserv/unstable/devices", Method: http.MethodPost},
-		{Path: "/_matrix/hungryserv/unstable/pushers", Method: http.MethodPost},
-		{Path: "/_matrix/hungryserv/unstable/push_rules", Method: http.MethodPost},
-		{Path: "/_matrix/hungryserv/unstable/invalidate_user_account_data", Method: http.MethodPost},
-
 		// Appservice websockets
 		{Path: "/_matrix/client/unstable/fi.mau.as_sync", Method: http.MethodGet},
 
