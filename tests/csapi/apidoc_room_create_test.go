@@ -179,7 +179,7 @@ func TestRoomCreate(t *testing.T) {
 			alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
 
 			// Get ordered timeline via a full sync
-			res, _ := alice.MustSync(t, client.SyncReq{Filter: `{"room":{"timeline":{"limit":20}}}`})
+			res, _ := alice.MustSync(t, client.SyncReq{})
 
 			roomObj := res.Get("rooms.join." + client.GjsonEscape(roomID))
 
@@ -187,10 +187,13 @@ func TestRoomCreate(t *testing.T) {
 				t.Fatalf("Room did not appear in sync")
 			}
 
-			event0 := roomObj.Get("timeline.events.0")
+			event0 := roomObj.Get(`timeline.events.#(type=="m.room.create")`)
 
 			if !event0.Exists() {
-				t.Fatalf("First timeline event does not exist")
+				event0 = roomObj.Get(`state.events.#(type=="m.room.create")`)
+			}
+			if !event0.Exists() {
+				t.Fatalf("Room create event does not exist")
 			}
 
 			if event0.Get("type").Str != "m.room.create" {
