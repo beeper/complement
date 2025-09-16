@@ -79,7 +79,7 @@ func TestPrivateAPI(t *testing.T) {
 		{Path: "/_matrix/client/v3/rooms/{roomID}/receipt/{type}/{eventID}", Method: http.MethodPost},
 		{Path: "/_matrix/client/v3/rooms/{roomID}/redact/{eventID}/{txn}", Method: http.MethodPut},
 		{Path: "/_matrix/client/v3/rooms/{roomID}/send/{type}/{txn}", Method: http.MethodPut},
-		{Path: "/_matrix/client/unstable/org.matrix.msc2716/rooms/{roomID}/batch_send", Method: http.MethodPost},
+		{Path: "/_matrix/client/unstable/com.beeper.backfill/rooms/{roomID}/batch_send", Method: http.MethodPost},
 		{Path: "/_matrix/client/unstable/com.beeper.chatmerging/rooms/{roomID}/split", Method: http.MethodPost},
 		{Path: "/_matrix/client/unstable/com.beeper.chatmerging/merge", Method: http.MethodPost},
 		{Path: "/_matrix/client/unstable/com.beeper.yeet/rooms/{roomID}/delete", Method: http.MethodPost},
