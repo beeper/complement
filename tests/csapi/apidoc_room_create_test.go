@@ -160,11 +160,11 @@ func TestRoomCreate(t *testing.T) {
 		t.Run("POST /createRoom creates a room with the given version", func(t *testing.T) {
 			t.Parallel()
 			roomID := alice.MustCreateRoom(t, map[string]interface{}{
-				"room_version": "2",
+				"room_version": "3",
 				"preset":       "public_chat",
 			})
 			content := alice.MustGetStateEventContent(t, roomID, "m.room.create", "")
-			must.MatchGJSON(t, content, match.JSONKeyEqual("room_version", "2"))
+			must.MatchGJSON(t, content, match.JSONKeyEqual("room_version", "3"))
 		})
 		// sytest: POST /createRoom makes a private room with invites
 		t.Run("POST /createRoom makes a private room with invites", func(t *testing.T) {
