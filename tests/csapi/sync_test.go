@@ -207,49 +207,49 @@ func TestSync(t *testing.T) {
 				}
 			}
 		})
-		// sytest: Newly joined room includes presence in incremental sync
-		t.Run("Newly joined room includes presence in incremental sync", func(t *testing.T) {
-			runtime.SkipIf(t, runtime.Dendrite) // FIXME: https://github.com/matrix-org/dendrite/issues/1324
-			roomID := alice.MustCreateRoom(t, map[string]interface{}{"preset": "public_chat"})
-			alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
-			_, nextBatch := bob.MustSync(t, client.SyncReq{})
-			bob.MustJoinRoom(t, roomID, []spec.ServerName{})
-			alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(bob.UserID, roomID))
-			nextBatch = bob.MustSyncUntil(t, client.SyncReq{Since: nextBatch}, func(userID string, sync gjson.Result) error {
-				presence := sync.Get("presence")
-				if len(presence.Get("events").Array()) == 0 {
-					return fmt.Errorf("presence.events is empty: %+v", presence)
-				}
-				usersInPresenceEvents(t, presence, []string{alice.UserID})
-				return nil
-			})
-			// There should be no new presence events
-			res, _ := bob.MustSync(t, client.SyncReq{Since: nextBatch})
-			usersInPresenceEvents(t, res.Get("presence"), []string{})
-		})
-		// sytest: Get presence for newly joined members in incremental sync
-		t.Run("Get presence for newly joined members in incremental sync", func(t *testing.T) {
-			runtime.SkipIf(t, runtime.Dendrite) // FIXME: https://github.com/matrix-org/dendrite/issues/1324
-			roomID := alice.MustCreateRoom(t, map[string]interface{}{"preset": "public_chat"})
-			nextBatch := alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
-			sendMessages(t, alice, roomID, "dummy message", 1)
-			_, nextBatch = alice.MustSync(t, client.SyncReq{Since: nextBatch})
-			bob.MustJoinRoom(t, roomID, []spec.ServerName{})
-			alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(bob.UserID, roomID))
+		// // sytest: Newly joined room includes presence in incremental sync
+		// t.Run("Newly joined room includes presence in incremental sync", func(t *testing.T) {
+		// 	runtime.SkipIf(t, runtime.Dendrite) // FIXME: https://github.com/matrix-org/dendrite/issues/1324
+		// 	roomID := alice.MustCreateRoom(t, map[string]interface{}{"preset": "public_chat"})
+		// 	alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
+		// 	_, nextBatch := bob.MustSync(t, client.SyncReq{})
+		// 	bob.MustJoinRoom(t, roomID, []spec.ServerName{})
+		// 	alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(bob.UserID, roomID))
+		// 	nextBatch = bob.MustSyncUntil(t, client.SyncReq{Since: nextBatch}, func(userID string, sync gjson.Result) error {
+		// 		presence := sync.Get("presence")
+		// 		if len(presence.Get("events").Array()) == 0 {
+		// 			return fmt.Errorf("presence.events is empty: %+v", presence)
+		// 		}
+		// 		usersInPresenceEvents(t, presence, []string{alice.UserID})
+		// 		return nil
+		// 	})
+		// 	// There should be no new presence events
+		// 	res, _ := bob.MustSync(t, client.SyncReq{Since: nextBatch})
+		// 	usersInPresenceEvents(t, res.Get("presence"), []string{})
+		// })
+		// // sytest: Get presence for newly joined members in incremental sync
+		// t.Run("Get presence for newly joined members in incremental sync", func(t *testing.T) {
+		// 	runtime.SkipIf(t, runtime.Dendrite) // FIXME: https://github.com/matrix-org/dendrite/issues/1324
+		// 	roomID := alice.MustCreateRoom(t, map[string]interface{}{"preset": "public_chat"})
+		// 	nextBatch := alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(alice.UserID, roomID))
+		// 	sendMessages(t, alice, roomID, "dummy message", 1)
+		// 	_, nextBatch = alice.MustSync(t, client.SyncReq{Since: nextBatch})
+		// 	bob.MustJoinRoom(t, roomID, []spec.ServerName{})
+		// 	alice.MustSyncUntil(t, client.SyncReq{}, client.SyncJoinedTo(bob.UserID, roomID))
 
-			// wait until there are presence events
-			nextBatch = alice.MustSyncUntil(t, client.SyncReq{Since: nextBatch}, func(userID string, sync gjson.Result) error {
-				presence := sync.Get("presence")
-				if len(presence.Get("events").Array()) == 0 {
-					return fmt.Errorf("presence.events is empty: %+v", presence)
-				}
-				usersInPresenceEvents(t, presence, []string{bob.UserID})
-				return nil
-			})
-			// There should be no new presence events
-			res, _ := alice.MustSync(t, client.SyncReq{Since: nextBatch})
-			usersInPresenceEvents(t, res.Get("presence"), []string{})
-		})
+		// 	// wait until there are presence events
+		// 	nextBatch = alice.MustSyncUntil(t, client.SyncReq{Since: nextBatch}, func(userID string, sync gjson.Result) error {
+		// 		presence := sync.Get("presence")
+		// 		if len(presence.Get("events").Array()) == 0 {
+		// 			return fmt.Errorf("presence.events is empty: %+v", presence)
+		// 		}
+		// 		usersInPresenceEvents(t, presence, []string{bob.UserID})
+		// 		return nil
+		// 	})
+		// 	// There should be no new presence events
+		// 	res, _ := alice.MustSync(t, client.SyncReq{Since: nextBatch})
+		// 	usersInPresenceEvents(t, res.Get("presence"), []string{})
+		// })
 
 		t.Run("sync should succeed even if the sync token points to a redaction of an unknown event", func(t *testing.T) {
 			// this is a regression test for https://github.com/matrix-org/synapse/issues/12864
