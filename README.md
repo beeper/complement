@@ -240,9 +240,21 @@ and mount these files onto your homeserver container:
 
 For example, to sign your certificate for the homeserver, run at each container start (Ubuntu):
 ```
-openssl genrsa -out $SERVER_NAME.key 2048
-openssl req -new -sha256 -key $SERVER_NAME.key -subj "/C=US/ST=CA/O=MyOrg, Inc./CN=$SERVER_NAME" -out $SERVER_NAME.csr
-openssl x509 -req -in $SERVER_NAME.csr -CA /complement/ca/ca.crt -CAkey /complement/ca/ca.key -CAcreateserial -out $SERVER_NAME.crt -days 1 -sha256
+echo "\
+.include /etc/ssl/openssl.cnf
+
+[SAN]
+subjectAltName=DNS:${SERVER_NAME}" > $SERVER_NAME.tls.conf
+openssl genrsa -out $SERVER_NAME.tls.key 2048
+openssl req -new \
+    -config $SERVER_NAME.tls.conf \
+    -key $SERVER_NAME.tls.key \
+    -out $SERVER_NAME.tls.csr \
+    -subj "/CN=$SERVER_NAME" \
+    -reqexts SAN
+openssl x509 -req -in $SERVER_NAME.tls.csr \
+    -CA /complement/ca/ca.crt -CAkey /complement/ca/ca.key -set_serial 1 \
+    -out $SERVER_NAME.tls.crt -extfile $SERVER_NAME.tls.conf -extensions SAN
 ```
 
 To add the CA cert to your trust store (Ubuntu):
