@@ -135,6 +135,9 @@ func TestThreadedReceipts(t *testing.T) {
 				"event_id": eventA,
 				"rel_type": "m.thread",
 			},
+			"m.mentions": map[string]any{
+				"user_ids": []string{bob.UserID},
+			},
 		},
 	})
 
@@ -144,6 +147,9 @@ func TestThreadedReceipts(t *testing.T) {
 		Content: map[string]interface{}{
 			"msgtype": "m.text",
 			"body":    fmt.Sprintf("Hello %s!", bob.UserID),
+			"m.mentions": map[string]any{
+				"user_ids": []string{bob.UserID},
+			},
 		},
 	})
 
